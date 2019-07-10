@@ -23,6 +23,12 @@ case "$LINUX" in
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     PKG_PATCH_DIRS="amlogic"
     ;;
+  realtek)
+    PKG_VERSION="ba17d7a7ffa5401640cc6a2ca230a627398bea96" # 5.4.0 afaerber/rtd1295-next
+    PKG_SHA256=""
+    PKG_URL="https://github.com/chewitt/linux/archive/$PKG_VERSION.tar.gz"
+    PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
+    ;;
   rockchip-4.4)
     PKG_VERSION="aa8bacf821e5c8ae6dd8cae8d64011c741659945"
     PKG_SHA256="a2760fe89a15aa7be142fd25fb08ebd357c5d855c41f1612cf47c6e89de39bb3"
