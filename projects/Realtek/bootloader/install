@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-2.0
+# Copyright (C) 2019-present Team LibreELEC (https://libreelec.tv)
+
+DESTDIR="$(get_build_dir u-boot)"
+
+echo "$BOOTLOADER: creating u-boot.bin"
+
+mkdir -p $INSTALL/usr/share/bootloader
+
+if [ -f $DESTDIR/u-boot.bin ] ; then
+  cp -av $DESTDIR/u-boot.bin $INSTALL/usr/share/bootloader
+fi
