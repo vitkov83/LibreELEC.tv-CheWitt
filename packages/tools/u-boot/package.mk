@@ -21,6 +21,11 @@ PKG_NEED_UNPACK="$PROJECT_DIR/$PROJECT/bootloader"
 [ -n "$DEVICE" ] && PKG_NEED_UNPACK+=" $PROJECT_DIR/$PROJECT/devices/$DEVICE/bootloader"
 
 case "$PROJECT" in
+  Realtek)
+    PKG_VERSION="ab06cf120dc1af768416c134e088e42058b33139"
+    PKG_SHA256=""
+    PKG_URL="https://github.com/chewitt/u-boot/archive/$PKG_VERSION.tar.gz"
+    ;;
   Rockchip)
     PKG_VERSION="8659d08d2b589693d121c1298484e861b7dafc4f"
     PKG_SHA256="3f9f2bbd0c28be6d7d6eb909823fee5728da023aca0ce37aef3c8f67d1179ec1"
