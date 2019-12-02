@@ -166,6 +166,14 @@ devices = \
       },
     },
   },
+  'Realtek' : {
+    'RTD1296' : {
+      'box' : {
+        'dtb' : 'rtd-1296-bananapi-w2-2GB-HDMI.dtb',
+        'config' : 'rtd1295_2GB_defconfig'
+      },
+    },
+  },
   'Rockchip': {
     'MiQi': {
       'rk3288': {
