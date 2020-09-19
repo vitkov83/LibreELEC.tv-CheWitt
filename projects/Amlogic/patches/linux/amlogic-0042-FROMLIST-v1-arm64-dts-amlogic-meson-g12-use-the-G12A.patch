@@ -1,0 +1,35 @@
+From cca84a40398a0278b6e68b1f147fe4c3f8bf5e83 Mon Sep 17 00:00:00 2001
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Sat, 26 Sep 2020 00:51:12 +0000
+Subject: [PATCH 42/62] FROMLIST(v1): arm64: dts: amlogic: meson-g12: use the
+ G12A specific dwmac compatible
+
+We have a dedicated "amlogic,meson-g12a-dwmac" compatible string for the
+Ethernet controller since commit 3efdb92426bf4 ("dt-bindings: net:
+dwmac-meson: Add a compatible string for G12A onwards").
+Using the AXG compatible string worked fine so far because the
+dwmac-meson8b driver doesn't handle the newly introduced register bits
+for G12A. However, once that changes the driver must be probed with the
+correct compatible string to manage these new register bits.
+
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+index 3757fdeb3254..9efc10883252 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+@@ -209,7 +209,7 @@
+ 		};
+ 
+ 		ethmac: ethernet@ff3f0000 {
+-			compatible = "amlogic,meson-axg-dwmac",
++			compatible = "amlogic,meson-g12a-dwmac",
+ 				     "snps,dwmac-3.70a",
+ 				     "snps,dwmac";
+ 			reg = <0x0 0xff3f0000 0x0 0x10000>,
+-- 
+2.17.1
+

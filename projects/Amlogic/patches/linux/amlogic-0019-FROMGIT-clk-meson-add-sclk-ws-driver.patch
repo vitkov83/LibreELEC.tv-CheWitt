@@ -1,0 +1,110 @@
+From 27dfc48ec72a66137524da8160c1ed496078164f Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 29 Jul 2020 17:43:57 +0200
+Subject: [PATCH 19/62] FROMGIT: clk: meson: add sclk-ws driver
+
+This is yet another simple but odd driver for the audio block of the g12a
+and sm1 SoC families.
+
+For TDMOUT's sclk to be properly inverted, bit 29 of
+AUDIO_CLK_TDMOUT_x_CTRL should be the inverse of bit 28.
+IOW bit28 == !bit29 at all times
+
+This setting is automatically applied on axg and the manual setting was
+added on g12a.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20200729154359.1983085-2-jbrunet@baylibre.com
+---
+ drivers/clk/meson/clk-phase.c | 56 +++++++++++++++++++++++++++++++++++
+ drivers/clk/meson/clk-phase.h |  6 ++++
+ 2 files changed, 62 insertions(+)
+
+diff --git a/drivers/clk/meson/clk-phase.c b/drivers/clk/meson/clk-phase.c
+index fe22e171121a..a6763439f7d2 100644
+--- a/drivers/clk/meson/clk-phase.c
++++ b/drivers/clk/meson/clk-phase.c
+@@ -125,6 +125,62 @@ const struct clk_ops meson_clk_triphase_ops = {
+ };
+ EXPORT_SYMBOL_GPL(meson_clk_triphase_ops);
+ 
++/*
++ * This is a special clock for the audio controller.
++ * This drive a bit clock inverter for which the
++ * opposite value of the inverter bit needs to be manually
++ * set into another bit
++ */
++static inline struct meson_sclk_ws_inv_data *
++meson_sclk_ws_inv_data(struct clk_regmap *clk)
++{
++	return (struct meson_sclk_ws_inv_data *)clk->data;
++}
++
++static int meson_sclk_ws_inv_sync(struct clk_hw *hw)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct meson_sclk_ws_inv_data *tph = meson_sclk_ws_inv_data(clk);
++	unsigned int val;
++
++	/* Get phase and sync the inverted value to ws */
++	val = meson_parm_read(clk->map, &tph->ph);
++	meson_parm_write(clk->map, &tph->ws, val ? 0 : 1);
++
++	return 0;
++}
++
++static int meson_sclk_ws_inv_get_phase(struct clk_hw *hw)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct meson_sclk_ws_inv_data *tph = meson_sclk_ws_inv_data(clk);
++	unsigned int val;
++
++	val = meson_parm_read(clk->map, &tph->ph);
++
++	return meson_clk_degrees_from_val(val, tph->ph.width);
++}
++
++static int meson_sclk_ws_inv_set_phase(struct clk_hw *hw, int degrees)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct meson_sclk_ws_inv_data *tph = meson_sclk_ws_inv_data(clk);
++	unsigned int val;
++
++	val = meson_clk_degrees_to_val(degrees, tph->ph.width);
++	meson_parm_write(clk->map, &tph->ph, val);
++	meson_parm_write(clk->map, &tph->ws, val ? 0 : 1);
++	return 0;
++}
++
++const struct clk_ops meson_sclk_ws_inv_ops = {
++	.init		= meson_sclk_ws_inv_sync,
++	.get_phase	= meson_sclk_ws_inv_get_phase,
++	.set_phase	= meson_sclk_ws_inv_set_phase,
++};
++EXPORT_SYMBOL_GPL(meson_sclk_ws_inv_ops);
++
++
+ MODULE_DESCRIPTION("Amlogic phase driver");
+ MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/clk/meson/clk-phase.h b/drivers/clk/meson/clk-phase.h
+index 5579f9ced142..b637b9b227bc 100644
+--- a/drivers/clk/meson/clk-phase.h
++++ b/drivers/clk/meson/clk-phase.h
+@@ -20,7 +20,13 @@ struct meson_clk_triphase_data {
+ 	struct parm ph2;
+ };
+ 
++struct meson_sclk_ws_inv_data {
++	struct parm ph;
++	struct parm ws;
++};
++
+ extern const struct clk_ops meson_clk_phase_ops;
+ extern const struct clk_ops meson_clk_triphase_ops;
++extern const struct clk_ops meson_sclk_ws_inv_ops;
+ 
+ #endif /* __MESON_CLK_PHASE_H */
+-- 
+2.17.1
+

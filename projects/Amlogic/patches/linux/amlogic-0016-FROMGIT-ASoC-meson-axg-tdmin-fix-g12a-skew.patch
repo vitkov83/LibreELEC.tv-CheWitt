@@ -1,0 +1,32 @@
+From 22d89cceb93cff4941b7813b5af09943417c0e0a Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 29 Jul 2020 17:44:54 +0200
+Subject: [PATCH 16/62] FROMGIT: ASoC: meson: axg-tdmin: fix g12a skew
+
+After carefully checking the result provided by the TDMIN on the g12a and
+sm1 SoC families, the TDMIN skew offset appears to be 3 instead of 2 on the
+axg.
+
+Fixes: f01bc67f58fd ("ASoC: meson: axg-tdm-formatter: rework quirks settings")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20200729154456.1983396-3-jbrunet@baylibre.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/meson/axg-tdmin.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
+index 88ed95ae886b..2d599ed2f32d 100644
+--- a/sound/soc/meson/axg-tdmin.c
++++ b/sound/soc/meson/axg-tdmin.c
+@@ -237,6 +237,7 @@ static const struct axg_tdm_formatter_driver g12a_tdmin_drv = {
+ 	.regmap_cfg	= &axg_tdmin_regmap_cfg,
+ 	.ops		= &axg_tdmin_ops,
+ 	.quirks		= &(const struct axg_tdm_formatter_hw) {
++		.invert_sclk	= false,
+ 		.skew_offset	= 3,
+ 	},
+ };
+-- 
+2.17.1
+

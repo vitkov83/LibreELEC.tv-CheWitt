@@ -1,0 +1,49 @@
+From fe43de0f6b392a00a57dd03fa36a44213f82c739 Mon Sep 17 00:00:00 2001
+From: Kevin Hilman <khilman@baylibre.com>
+Date: Wed, 23 Sep 2020 01:04:17 +0000
+Subject: [PATCH 39/62] FROMLIST(v1): soc: amlogic: pm-domains: use always-on
+ flag
+
+Rather than use a governor to keep these domains always-on, instead
+use the flag GENPD_FLAG_ALWAYS_ON.  This has the same effect, but with
+much lower overhead since the governor path is not used at all.
+
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+---
+ drivers/soc/amlogic/meson-ee-pwrc.c     | 4 ++--
+ drivers/soc/amlogic/meson-gx-pwrc-vpu.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
+index 9fd97ad02806..5164a4dc2352 100644
+--- a/drivers/soc/amlogic/meson-ee-pwrc.c
++++ b/drivers/soc/amlogic/meson-ee-pwrc.c
+@@ -450,8 +450,8 @@ static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = pm_genpd_init(&dom->base, &pm_domain_always_on_gov,
+-				    false);
++		dom->base.flags = GENPD_FLAG_ALWAYS_ON;
++		ret = pm_genpd_init(&dom->base, NULL, false);
+ 		if (ret)
+ 			return ret;
+ 	} else {
+diff --git a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+index 511b6856225d..21b4bc811c00 100644
+--- a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
++++ b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+@@ -339,8 +339,8 @@ static int meson_gx_pwrc_vpu_probe(struct platform_device *pdev)
+ 			return ret;
+ 	}
+ 
+-	pm_genpd_init(&vpu_pd->genpd, &pm_domain_always_on_gov,
+-		      powered_off);
++	vpu_pd->genpd.flags = GENPD_FLAG_ALWAYS_ON;
++	pm_genpd_init(&vpu_pd->genpd, NULL, powered_off);
+ 
+ 	return of_genpd_add_provider_simple(pdev->dev.of_node,
+ 					    &vpu_pd->genpd);
+-- 
+2.17.1
+

@@ -1,7 +1,7 @@
-From 5b92e88cc625b65870b246103dd6ed2d2967ee07 Mon Sep 17 00:00:00 2001
+From d87ed62f013f8c5e727f8197c4e40bf0cc2cf107 Mon Sep 17 00:00:00 2001
 From: kszaq <kszaquitto@gmail.com>
 Date: Sat, 6 Jul 2019 07:54:44 +0000
-Subject: [PATCH 004/156] HACK: arm64: dts: meson-gx: add ATF BL32 reserved
+Subject: [PATCH 04/62] HACK: arm64: dts: meson-gx: add ATF BL32 reserved
  memory region
 
 Vendor firmware/uboot has an additional reserved region for BL32 trusted
@@ -16,10 +16,10 @@ Signed-off-by: kszaq <kszaquitto@gmail.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-index b9b16f48cb1e..ea4dac8506bc 100644
+index 9db4691f646e..3e0f06886427 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
 +++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-@@ -42,6 +42,12 @@
+@@ -43,6 +43,12 @@
  			no-map;
  		};
  

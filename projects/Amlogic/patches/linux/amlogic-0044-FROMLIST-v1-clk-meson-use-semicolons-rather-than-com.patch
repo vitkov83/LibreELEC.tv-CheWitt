@@ -1,0 +1,39 @@
+From 734cdef42623be56eb8b528222bc8268099e5e26 Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@inria.fr>
+Date: Mon, 28 Sep 2020 01:16:39 +0000
+Subject: [PATCH 44/62] FROMLIST(v1): clk: meson: use semicolons rather than
+ commas to separate statements
+
+Replace commas with semicolons.  What is done is essentially described by
+the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
+
+// <smpl>
+@@ expression e1,e2; @@
+e1
+-,
++;
+e2
+... when any
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+---
+ drivers/clk/meson/meson-aoclk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/meson/meson-aoclk.c b/drivers/clk/meson/meson-aoclk.c
+index bf8bea675d24..3a6d84cd6601 100644
+--- a/drivers/clk/meson/meson-aoclk.c
++++ b/drivers/clk/meson/meson-aoclk.c
+@@ -57,7 +57,7 @@ int meson_aoclkc_probe(struct platform_device *pdev)
+ 	rstc->data = data;
+ 	rstc->regmap = regmap;
+ 	rstc->reset.ops = &meson_aoclk_reset_ops;
+-	rstc->reset.nr_resets = data->num_reset,
++	rstc->reset.nr_resets = data->num_reset;
+ 	rstc->reset.of_node = dev->of_node;
+ 	ret = devm_reset_controller_register(dev, &rstc->reset);
+ 	if (ret) {
+-- 
+2.17.1
+

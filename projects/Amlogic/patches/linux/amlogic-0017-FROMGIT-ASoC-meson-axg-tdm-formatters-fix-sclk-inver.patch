@@ -1,0 +1,36 @@
+From 283dd387a2933e8af19e19f57be10bdfc5575637 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 29 Jul 2020 17:44:55 +0200
+Subject: [PATCH 17/62] FROMGIT: ASoC: meson: axg-tdm-formatters: fix sclk
+ inversion
+
+After carefully checking, it appears that both tdmout and tdmin require the
+rising edge of the sclk they get to be synchronized with the frame sync
+event (which should be a rising edge of lrclk).
+
+TDMIN was improperly set before this patch. Remove the sclk_invert quirk
+which is no longer needed and fix the sclk phase.
+
+Fixes: 1a11d88f499c ("ASoC: meson: add tdm formatter base driver")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20200729154456.1983396-4-jbrunet@baylibre.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/meson/axg-tdmin.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
+index 2d599ed2f32d..88ed95ae886b 100644
+--- a/sound/soc/meson/axg-tdmin.c
++++ b/sound/soc/meson/axg-tdmin.c
+@@ -237,7 +237,6 @@ static const struct axg_tdm_formatter_driver g12a_tdmin_drv = {
+ 	.regmap_cfg	= &axg_tdmin_regmap_cfg,
+ 	.ops		= &axg_tdmin_ops,
+ 	.quirks		= &(const struct axg_tdm_formatter_hw) {
+-		.invert_sclk	= false,
+ 		.skew_offset	= 3,
+ 	},
+ };
+-- 
+2.17.1
+
