@@ -147,6 +147,12 @@ for file in $KODI_ROOT/userdata/Database/*.db; do
   fi
 done
 
+# enable Amlogic bifrost support in mesa
+case $(dtsoc) in
+  amlogic*)
+    export PAN_MESA_DEBUG=bifrost
+esac
+
 /usr/lib/kodi/kodi.bin $SAVED_ARGS
 RET=$?
 
